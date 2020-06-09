@@ -2,7 +2,7 @@ from nltk.corpus import stopwords
 from nltk.cluster.util import cosine_distance
 import numpy as np
 import networkx as nx
-import re
+import regex
 
 from flask import Flask, request, jsonify, render_template
 import pickle 
@@ -16,13 +16,13 @@ def read_article(data):
     sentences = []
     # print("Given Text:\n----------\n")
     for sentence in article:
-        print(sentence)
-        review = re.sub("[^A-Za-z0-9]",' ', sentence)
+#         print(sentence)
+        review = regex.sub("[^A-Za-z0-9]",' ', sentence)
         sentences.append(review.replace("[^a-zA-Z]", " ").split(" "))
         
-    sentences.pop() 
-    
+    sentences.pop()     
     return sentences
+
 
 def sentence_similarity(sent1, sent2, stopwords=None):
     if stopwords is None:
@@ -48,7 +48,7 @@ def sentence_similarity(sent1, sent2, stopwords=None):
             continue
         vector2[all_words.index(w)] += 1
  
-    return 1 - cosine_distance(vector1, vector2)
+    return 1 - nltk.cluster.util.cosine_distance(vector1, vector2)
 
 def build_similarity_matrix(sentences, stop_words):
     # Create an empty similarity matrix
@@ -94,18 +94,14 @@ def generate_summary(file_name, top_n=5):
 #----------FLASK-----------------------------#
 
 app = Flask(__name__)
-
-
-
-
 @app.route('/templates', methods =['POST'])
 def original_text_form():
 		text = request.form['input_text']
 		number_of_sent = request.form['num_sentences']
-		print("TEXT:\n",text)
+# 		print("TEXT:\n",text)
 		summary = generate_summary(text,int(number_of_sent))
-		print("*"*30)
-		print(summary)
+# 		print("*"*30)
+# 		print(summary)
 		return render_template('index1.html', title = "Summarizer", original_text = text, output_summary = summary, num_sentences = 5)
 
 @app.route('/')
