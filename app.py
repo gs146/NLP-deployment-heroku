@@ -1,28 +1,20 @@
 from nltk.corpus import stopwords
-from nltk.cluster.util import cosine_distance
 import numpy as np
 import networkx as nx
 import regex
-
 from flask import Flask, request, jsonify, render_template
-import pickle 
-
 import nltk
-nltk.download('stopwords')
+# nltk.download('stopwords')
 
 def read_article(data):
 
     article = data.split(". ")
     sentences = []
-    # print("Given Text:\n----------\n")
     for sentence in article:
-#         print(sentence)
         review = regex.sub("[^A-Za-z0-9]",' ', sentence)
-        sentences.append(review.replace("[^a-zA-Z]", " ").split(" "))
-        
+        sentences.append(review.replace("[^a-zA-Z]", " ").split(" "))        
     sentences.pop()     
     return sentences
-
 
 def sentence_similarity(sent1, sent2, stopwords=None):
     if stopwords is None:
